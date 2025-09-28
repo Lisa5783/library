@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Редактирование филиала</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.location.label(class="form-label") }}
+        {{ form.location(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{{ url_for('branches.list') }}" class="btn btn-secondary">Назад</a>
+</form>
+{% endblock %}

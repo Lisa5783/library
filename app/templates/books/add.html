@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Добавление книги</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.authors.label(class="form-label") }}
+        {{ form.authors(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.publisher.label(class="form-label") }}
+        {{ form.publisher(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.year.label(class="form-label") }}
+        {{ form.year(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.pages.label(class="form-label") }}
+        {{ form.pages(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.illustrations.label(class="form-label") }}
+        {{ form.illustrations(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.cost.label(class="form-label") }}
+        {{ form.cost(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.copies_available.label(class="form-label") }}
+        {{ form.copies_available(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-success">Добавить</button>
+    <a href="{{ url_for('books.list') }}" class="btn btn-secondary">Отмена</a>
+</form>
+{% endblock %}
