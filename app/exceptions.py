@@ -6,13 +6,17 @@ from flask import render_template, request, jsonify
 from werkzeug.exceptions import HTTPException
 import logging
 
-
 # --- демонстрационная уязвимость ---
-def dangerous_eval_expression(expr):
-    return eval(expr)
+def dangerous_eval_expression(user_input):
+    # Потенциально опасное использование eval() с ненадежными данными (DEMO VULNERABILITY)
+    return eval(user_input)
 
-# Принудительный вызов для теста уязвимости
-dangerous_eval_expression("2 + 2")
+# Имитируем получение данных из ненадёжного источника (например, пользовательский ввод)
+untrusted_input = "2 + 2"  # В реальности это может быть любой ввод извне
+
+# Вызов функции с "ненадежными" данными
+dangerous_eval_expression(untrusted_input)
+
 
 
 
