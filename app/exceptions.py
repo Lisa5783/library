@@ -1,29 +1,13 @@
-"""
-Пользовательские исключения и обработчики ошибок для системы управления библиотекой
-"""
-
-from flask import render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from werkzeug.exceptions import HTTPException
 import logging
 
+app = Flask(__name__)
 
 # --- демонстрационная уязвимость для Bandit (правило B307) ---
 def demo_eval():
     expr = input("Введите выражение: ")
     print(eval(expr))  # Уязвимость, которую Bandit точно найдет
-
-# --- демонстрационная уязвимость ---
-def dangerous_eval_expression(user_input):
-    # Потенциально опасное использование eval() с ненадежными данными (DEMO VULNERABILITY)
-    return eval(user_input)
-
-# Имитируем получение данных из ненадёжного источника (например, пользовательский ввод)
-untrusted_input = "2 + 2"  # В реальности это может быть любой ввод извне
-
-# Вызов функции с "ненадежными" данными
-dangerous_eval_expression(untrusted_input)
-
-
 
 
 class LibraryBaseException(Exception):
@@ -124,7 +108,6 @@ def register_error_handlers(app):
 
     @app.errorhandler(404)
     def not_found_error(error):
-        """Обработчик ошибки 404"""
         if request.path.startswith('/api/'):
             return jsonify({
                 'error': 'Ресурс не найден',
@@ -135,7 +118,6 @@ def register_error_handlers(app):
 
     @app.errorhandler(500)
     def internal_error(error):
-        """Обработчик внутренних ошибок сервера"""
         if request.path.startswith('/api/'):
             return jsonify({
                 'error': 'Внутренняя ошибка сервера',
@@ -146,7 +128,6 @@ def register_error_handlers(app):
 
     @app.errorhandler(403)
     def forbidden_error(error):
-        """Обработчик ошибки 403"""
         if request.path.startswith('/api/'):
             return jsonify({
                 'error': 'Доступ запрещен',
@@ -157,7 +138,6 @@ def register_error_handlers(app):
 
     @app.errorhandler(400)
     def bad_request_error(error):
-        """Обработчик ошибки 400"""
         if request.path.startswith('/api/'):
             return jsonify({
                 'error': 'Неверный запрос',
@@ -168,13 +148,11 @@ def register_error_handlers(app):
 
     @app.errorhandler(LibraryBaseException)
     def handle_library_exception(error):
-        """Обработчик пользовательских исключений системы библиотеки"""
         app.logger.error(f"Library exception: {error.message}")
 
         if request.path.startswith('/api/'):
             return jsonify(error.to_dict()), error.status_code
 
-        # Определяем шаблон для отображения ошибки
         template_map = {
             404: 'errors/404.html',
             400: 'errors/400.html',
@@ -194,7 +172,6 @@ def register_error_handlers(app):
 
     @app.errorhandler(Exception)
     def handle_generic_exception(error):
-        """Обработчик всех остальных исключений"""
         app.logger.error(f"Unhandled exception: {str(error)}", exc_info=True)
 
         if request.path.startswith('/api/'):
@@ -210,9 +187,8 @@ def register_error_handlers(app):
             error_message='Произошла непредвиденная ошибка'
         ), 500
 
-    # Настройка логирования ошибок
+    # Логирование ошибок
     if not app.debug:
-        # В продакшене настраиваем файловое логирование
         import os
         if not os.path.exists('logs'):
             os.mkdir('logs')
@@ -226,3 +202,15 @@ def register_error_handlers(app):
 
         app.logger.setLevel(logging.INFO)
         app.logger.info('Система управления библиотекой запущена')
+
+
+# Регистрация обработчиков ошибок во Flask приложении
+register_error_handlers(app)
+
+
+if __name__ == '__main__':
+    # Запуск демонстрационной уязвимости, чтобы bandit мог её найти
+    demo_eval()
+
+    # Запуск Flask (для реального использования uncomment)
+    # app.run(debug=True)
