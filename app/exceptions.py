@@ -7,9 +7,13 @@ from werkzeug.exceptions import HTTPException
 import logging
 
 
-####
+# --- демонстрационная уязвимость ---
 def dangerous_eval_expression(expr):
     return eval(expr)
+
+# Принудительный вызов для теста уязвимости
+dangerous_eval_expression("2 + 2")
+
 
 
 class LibraryBaseException(Exception):
