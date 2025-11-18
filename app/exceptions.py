@@ -6,6 +6,12 @@ from flask import render_template, request, jsonify
 from werkzeug.exceptions import HTTPException
 import logging
 
+
+# --- демонстрационная уязвимость для Bandit (правило B307) ---
+def demo_eval():
+    expr = input("Введите выражение: ")
+    print(eval(expr))  # Уязвимость, которую Bandit точно найдет
+
 # --- демонстрационная уязвимость ---
 def dangerous_eval_expression(user_input):
     # Потенциально опасное использование eval() с ненадежными данными (DEMO VULNERABILITY)
