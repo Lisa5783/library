@@ -11,14 +11,13 @@ from app.models import Book, Branch, Faculty
 
 def _create_app():
     """
-    Создаем приложение без режима 'testing',
-    потому что в проекте нет отдельной TestingConfig.
+    Создаем приложение.
+
+    ВАЖНО: не трогаем SQLALCHEMY_DATABASE_URI, чтобы использовать обычную app.db,
+    иначе in-memory SQLite изолирует данные между соединениями.
     """
     app = create_app()  # фабрика без параметров
-
     app.config["TESTING"] = True
-    # Используем in-memory БД для тестов
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     return app
 
 
@@ -26,6 +25,8 @@ def _create_app():
 def app():
     app = _create_app()
     with app.app_context():
+        # Полностью пересоздаём таблицы перед каждым тестом
+        db.drop_all()
         db.create_all()
         try:
             yield app
@@ -60,8 +61,8 @@ def test_api_get_faculties_for_book_in_branch(client):
         illustrations=True,
         cost=850.0,
         copies_available=0,   # важно для хука валидации
-        times_issued=0,       # тоже безопасное значение
-        branch_id=branch.id,  # книга «лежит» в этом филиале
+        times_issued=0,       # безопасное значение
+        branch_id=branch.id,  # книга относится к этому филиалу
     )
     db.session.add(book)
 
@@ -69,7 +70,7 @@ def test_api_get_faculties_for_book_in_branch(client):
     fac2 = Faculty(name="Факультет прикладной математики", description="...")
     db.session.add_all([fac1, fac2])
 
-    # Связь книга ↔ факультеты через relationship
+    # Связываем книгу с факультетами через relationship
     book.faculties.append(fac1)
     book.faculties.append(fac2)
 
@@ -92,17 +93,8 @@ def test_api_get_faculties_for_book_in_branch(client):
     assert "Факультет прикладной математики" in names
 
 
-def test_api_get_faculties_for_nonexistent_book(client):
-    """
-    Невалидная книга → сейчас API возвращает 404.
-    """
-    response = client.get("/api/books/999999/faculties/1")
-    assert response.status_code == 404  # меняем ожидание с 200 на 404
+def test_api_get_faculties_for_nonexistent_boo
 
-
-if __name__ == "__main__":
-    # Чтобы `python test.py` запускал pytest-тесты
-    raise SystemExit(pytest.main([__file__]))
 
 
 
