@@ -2,7 +2,7 @@ from flask import jsonify
 from app.api import bp
 from app.models import Book, Branch, Faculty
 
-@bp.route('/books') #
+@bp.route('/books')
 def books_json():
     books = Book.query.all()
     return jsonify([book.to_dict() for book in books])
