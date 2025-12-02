@@ -1,15 +1,5 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import Blueprint
 
-db = SQLAlchemy()
+bp = Blueprint('main', __name__)
 
-def create_app(config_name="default"):
-    app = Flask(__name__)
-    # конфиг сюда
-    db.init_app(app)
-
-    from app.main import bp as main_bp
-    app.register_blueprint(main_bp)
-
-    return app
-
+from app.main import views
