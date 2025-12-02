@@ -1,5 +1,15 @@
-from flask import Blueprint
+# app/__init__.py
+from flask import Flask          # ← ЭТО ОБЯЗАТЕЛЬНО
+from flask_sqlalchemy import SQLAlchemy
 
-bp = Blueprint('branches', __name__)
+db = SQLAlchemy()
 
-from app.branches import views
+def create_app(config_name="default"):
+    app = Flask(__name__)
+    db.init_app(app)
+
+    from app.main import bp as main_bp
+    app.register_blueprint(main_bp)
+
+    return app
+
