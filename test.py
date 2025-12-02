@@ -93,7 +93,17 @@ def test_api_get_faculties_for_book_in_branch(client):
     assert "Факультет прикладной математики" in names
 
 
-def test_api_get_faculties_for_nonexistent_boo
+def test_api_get_faculties_for_nonexistent_book(client):
+    """
+    Невалидная книга → по факту сейчас API возвращает 404.
+    """
+    response = client.get("/api/books/999999/faculties/1")
+    assert response.status_code == 404
+
+
+if __name__ == "__main__":
+    # Чтобы `python test.py` запускал pytest-тесты
+    raise SystemExit(pytest.main([__file__]))
 
 
 
