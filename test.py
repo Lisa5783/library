@@ -6,7 +6,7 @@ GET /api/books/<book_id>/faculties/<branch_id>
 
 import pytest
 from app import create_app, db
-from app.models import Book, Branch, Faculty, book_faculty
+from app.models import Book, Branch, Faculty
 
 
 def _create_app():
@@ -22,6 +22,7 @@ def _create_app():
         app = create_app()
 
     app.config["TESTING"] = True
+    # На всякий случай переопределим БД на in-memory
     app.config.setdefault("SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:")
     return app
 
@@ -52,7 +53,7 @@ def test_api_get_faculties_for_book_in_branch(client):
     # --- Подготовка данных ---
     branch = Branch(name="Центральный", location="Москва")
     db.session.add(branch)
-    db.session.flush()  # нужно, чтобы появился branch.id
+    db.session.flush()  # чтобы у branch появился id
 
     book = Book(
         title="Основы криптографии",
@@ -68,16 +69,12 @@ def test_api_get_faculties_for_book_in_branch(client):
     fac1 = Faculty(name="Факультет информационной безопасности", description="...")
     fac2 = Faculty(name="Факультет прикладной математики", description="...")
     db.session.add_all([fac1, fac2])
-    db.session.commit()
 
-    # --- Связь книга ↔ факультеты ---
-    db.session.execute(
-        book_faculty.insert(),
-        [
-            {"book_id": book.id, "faculty_id": fac1.id},
-            {"book_id": book.id, "faculty_id": fac2.id},
-        ],
-    )
+    # Связываем книгу с факультетами через отношение
+    # (ожидаем, что у Book есть relationship faculties)
+    book.faculties.append(fac1)
+    book.faculties.append(fac2)
+
     db.session.commit()
 
     # --- Запрос к API ---
@@ -113,5 +110,6 @@ def test_api_get_faculties_for_nonexistent_book(client):
 if __name__ == "__main__":
     # Чтобы `python test.py` запускал pytest-тесты
     raise SystemExit(pytest.main([__file__]))
+
 
 
