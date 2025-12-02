@@ -7,7 +7,7 @@ from werkzeug.exceptions import HTTPException
 import logging
 
 
-app = Flask(__name__)
+
 
 # --- демонстрационная уязвимость для Bandit (правило B307) ---
 def demo_eval():
