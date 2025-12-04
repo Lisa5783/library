@@ -1353,3 +1353,5 @@ jinja2.exceptions.TemplateNotFound: errors/404.html
 2025-09-25 15:07:52,829 INFO: Система управления библиотекой запущена [in C:\Users\Lisa\Desktop\library_management_system\app\exceptions.py:210]
 2025-09-25 17:06:16,879 INFO: Система управления библиотекой запущена [in C:\Users\Lisa\Desktop\library_management_system\app\exceptions.py:210]
 2025-09-28 18:39:18,924 INFO: Система управления библиотекой запущена [in C:\Users\Lisa\Desktop\library_management_system\app\exceptions.py:210]
+2025-12-04 20:57:45,287 INFO: Система управления библиотекой запущена [in C:\Users\Lisa\Desktop\2\library\app\exceptions.py:210]
+2025-12-04 21:05:20,993 INFO: Система управления библиотекой запущена [in C:\Users\Lisa\Desktop\2\library\app\exceptions.py:210]

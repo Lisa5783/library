@@ -27,6 +27,8 @@ class Book(db.Model):
     cost = db.Column(db.Float, nullable=False)
     copies_available = db.Column(db.Integer, default=1)
     times_issued = db.Column(db.Integer, default=0)
+    genre = db.Column(db.String(50), nullable=True)
+
 
     # Внешний ключ на филиал
     branch_id = db.Column(db.Integer, db.ForeignKey('branch.id'), nullable=False)
