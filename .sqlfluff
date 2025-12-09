@@ -1,3 +1,4 @@
 [sqlfluff]
-dialect = sqlite
+dialect = postgres
 exclude_rules = L009,L031
+
